@@ -1,1 +1,125 @@
+<html lang="en">
+<head>
+    <meta charset="utf-8"/>
+    <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+    <title>Anonym</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" rel="stylesheet"/>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet"/>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@1.28.5/dist/umd/supabase.min.js"></script>
+    <script>
+        // Initialize Supabase
+        const SUPABASE_URL = 'https://zqescohdzxlvalmxpfhp.supabase.co';
+        const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InpxZXNjb2hkenhsdmFsbXhwZmhwIiwicm9sZSI6ImFub24iLCJpYXQiOjE3MzUzODc5MTksImV4cCI6MjA1MDk2MzkxOX0.0VVZ6M5SYQe0e_CNfuF8tJPN8M5lnw-AzW_Y2tukU4M';
+        const supabase = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+
+        async function handleLogin(event) {
+            event.preventDefault();
+            const email = document.getElementById('login-email').value;
+            const password = document.getElementById('login-password').value;
+
+            const { user, error } = await supabase.auth.signIn({ email, password });
+
+            if (error) {
+                alert('Error logging in: ' + error.message);
+            } else {
+                alert('Logged in successfully!');
+                // Redirect or perform other actions after successful login
+            }
+        }
+
+        async function handleSignup(event) {
+            event.preventDefault();
+            const username = document.getElementById('signup-username').value;
+            const email = document.getElementById('signup-email').value;
+            const password = document.getElementById('signup-password').value;
+
+            if (!username || !email || !password) {
+                alert('Please fill in all fields.');
+                return;
+            }
+
+            try {
+                console.log("Attempting to sign up with email:", email);  // Debugging
+                const { user, error } = await supabase.auth.signUp(
+                    { email, password },
+                    { data: { username } }
+                );
+
+                console.log(user, error);  // Debugging
+
+                if (error) {
+                    alert('Error signing up: ' + error.message);
+                } else {
+                    alert('Signup successful! Please log in.');
+                    showLogin(); // Switch to login form
+                }
+            } catch (err) {
+                console.error("Error during sign up:", err);
+                alert('Something went wrong. Please try again.');
+            }
+        }
+
+        function showLogin() {
+            document.getElementById('login-form').classList.remove('hidden');
+            document.getElementById('signup-form').classList.add('hidden');
+        }
+
+        function showSignup() {
+            document.getElementById('signup-form').classList.remove('hidden');
+            document.getElementById('login-form').classList.add('hidden');
+        }
+    </script>
+</head>
+<body class="bg-gray-100 font-roboto">
+    <div class="min-h-screen flex items-center justify-center">
+        <div class="bg-white p-8 rounded-lg shadow-lg w-full max-w-md">
+            <div class="flex justify-center mb-6">
+                <img alt="WhatsApp logo placeholder image" class="w-24 h-24 rounded-full" height="100" src="https://i.ibb.co/qnDVzvS/1000057508-removebg-preview.png" width="100"/>
+            </div>
+            <h2 class="text-2xl font-bold text-center mb-6">Anonym</h2>
+            
+            <!-- Login Form -->
+            <form id="login-form" onsubmit="handleLogin(event)">
+                <div class="mb-4">
+                    <label class="block text-gray-700 font-medium mb-2" for="login-email">Email</label>
+                    <input class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500" id="login-email" name="email" placeholder="example@example.com" type="email"/>
+                </div>
+                <div class="mb-4">
+                    <label class="block text-gray-700 font-medium mb-2" for="login-password">Password</label>
+                    <input class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500" id="login-password" name="password" placeholder="********" type="password"/>
+                </div>
+                <button class="w-full bg-green-500 text-white py-2 rounded-lg font-medium hover:bg-green-600 focus:outline-none focus:ring-2 focus:ring-green-500" type="submit">Login</button>
+                <div class="text-center mt-4">
+                    <p class="text-gray-700">Don't have an account? 
+                        <a class="text-green-500 hover:underline cursor-pointer" onclick="showSignup()">Sign up</a>
+                    </p>
+                </div>
+            </form>
+            
+            <!-- Signup Form -->
+            <form id="signup-form" class="hidden" onsubmit="handleSignup(event)">
+                <div class="mb-4">
+                    <label class="block text-gray-700 font-medium mb-2" for="signup-username">Username</label>
+                    <input class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500" id="signup-username" name="username" placeholder="Username" type="text"/>
+                </div>
+                <div class="mb-4">
+                    <label class="block text-gray-700 font-medium mb-2" for="signup-email">Email</label>
+                    <input class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500" id="signup-email" name="email" placeholder="example@example.com" type="email"/>
+                </div>
+                <div class="mb-4">
+                    <label class="block text-gray-700 font-medium mb-2" for="signup-password">Password</label>
+                    <input class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500" id="signup-password" name="password" placeholder="********" type="password"/>
+                </div>
+                <button class="w-full bg-green-500 text-white py-2 rounded-lg font-medium hover:bg-green-600 focus:outline-none focus:ring-2 focus:ring-green-500" type="submit">Sign Up</button>
+                <div class="text-center mt-4">
+                    <p class="text-gray-700">Already have an account? 
+                        <a class="text-green-500 hover:underline cursor-pointer" onclick="showLogin()">Login</a>
+                    </p>
+                </div>
+            </form>
+        </div>
+    </div>
+</body>
+</html>
 
